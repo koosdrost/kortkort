@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Apparel Guide</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+
+<body>
+    <h2>Form</h2>
+
+    <div class="container" th:if="${username != null}" th:style="'float: inline-end;'">
+        <p th:text="'Ingelogd als: ' + ${username}" />
+        <form action="#" th:action="@{/logout}" method="post">
+            <input type="submit" value="Uitloggen" />
+        </form>
+    </div>
+
+    <br/>
+    <form action="#" th:action="@{/}" th:object="${input}" method="post">
+        <p>Locatie: <input type="text" th:field="*{content}" /></p>
+        <input type="submit" value="Zoeken" />
+    </form>
+
+    <br/>
+    <div th:if="${input.content != null}">
+        <h2>Score</h2>
+        <div class="container">
+            <p th:text="'Stad: ' + ${input.content}" />
+        </div>
+
+        <div class="container" th:if="${score != null}">
+            <p th:text="'Temperatuur: ' + ${score.getTemperatuur()}" />
+            <p th:text="'Wind: ' + ${score.getWind()}" />
+            <br/>
+            <p th:text="'Advies: ' + ${score.getAdvies()}" />
+            <p th:text="'Beschrijving: ' + ${score.getBeschrijving()}" />
+            <p th:text="'Gevoelstemperatuur: ' + ${score.getGevoelstemperatuur()}" />
+        </div>
+
+        <br/>
+
+        <div id="map" style="height: 450px; width: 900px"></div>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            var value = [(${location})];
+            var map = L.map('map').setView([value.lat, value.lon], 10);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+            }).addTo(map);
+
+            L.marker([value.lat, value.lon]).addTo(map)
+                .bindPopup(value.display_name)
+                .openPopup();
+            /*]]>*/
+        </script>
+    </div>
+    <br/>
+
+</body>
+</html>
