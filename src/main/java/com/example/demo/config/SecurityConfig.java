@@ -13,6 +13,8 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
@@ -40,11 +42,6 @@ class SecurityConfig {
     }
 
     @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
-    }
-
-    @Bean
     protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
         return new RegisterSessionAuthenticationStrategy(sessionRegistry());
     }
@@ -52,6 +49,20 @@ class SecurityConfig {
     @Bean
     public HttpSessionEventPublisher httpSessionEventPublisher() {
         return new HttpSessionEventPublisher();
+    }
+
+    //    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+////        http.authorizeRequests(authorize -> authorize.anyRequest().authenticated())
+////                .oauth2Login(oauth2 -> oauth2
+////                        .defaultSuccessUrl("/callback", true) // Waar de gebruiker heen gaat na succesvolle login
+////                        .failureUrl("/login?error=true") // Foutpagina bij mislukte login
+////                );
+//        return http.build();
+//    }
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
     }
 
     /**
@@ -63,7 +74,7 @@ class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(new AntPathRequestMatcher("/*"))
                 .hasRole("user")
-                .requestMatchers(new AntPathRequestMatcher("/"))
+                .requestMatchers(new AntPathRequestMatcher("/*"))
                 .permitAll()
                 .anyRequest()
                 .authenticated());

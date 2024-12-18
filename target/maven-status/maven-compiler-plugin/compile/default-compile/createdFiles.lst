@@ -1,7 +1,12 @@
+com/example/demo/KortKortApplication.class
+com/example/demo/controller/OAuthController.class
 com/example/demo/dom/Weer.class
+com/example/demo/controller/TestEndpoint.class
 com/example/demo/controller/WeatherController.class
-com/example/demo/DemoApplication.class
+com/example/demo/service/StravaService.class
+com/example/demo/handler/KeycloakLogoutHandler.class
 com/example/demo/dom/Locatie.class
+com/example/demo/config/SecurityConfig.class
 com/example/demo/controller/GuiController.class
 com/example/demo/dom/Input.class
 com/example/demo/service/GeoService.class

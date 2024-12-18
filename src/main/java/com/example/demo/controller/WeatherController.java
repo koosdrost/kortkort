@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
+
 @RestController
 public class WeatherController {
 
     private final static String URL = "https://weerlive.nl/api/weerlive_api_v2.php?key=9498168f1b&locatie=";
+    private static String previousJson = "";
 
     @GetMapping("/score")
     public Weer score(String location) throws JsonProcessingException {
@@ -23,7 +26,9 @@ public class WeatherController {
         ObjectMapper mapper = new JsonMapper();
         JsonNode json = mapper.readTree(entity.getBody()).get("liveweer").get(0);
 
-        if (json != null) {
+        if (json != null && (Objects.equals(previousJson, ""))) {
+            previousJson = json.asText();
+
             Weer liveweer = new Weer();
             liveweer.setGevoelstemperatuur(json.get("gtemp").asDouble());
             liveweer.setTemperatuur(json.get("temp").asDouble());

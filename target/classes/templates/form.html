@@ -8,56 +8,111 @@
 </head>
 
 <body>
-    <h2>Form</h2>
+    <header class="containerHeader">
+        <h1 class="box1">Appearel choice</h1>
 
-    <div class="container" th:if="${username != null}" th:style="'float: inline-end;'">
-        <p th:text="'Ingelogd als: ' + ${username}" />
-        <form action="#" th:action="@{/logout}" method="post">
-            <input type="submit" value="Uitloggen" />
+<!--        <nav class="box">-->
+<!--            <a href="#home">Home</a>-->
+<!--            <a href="#about">Over</a>-->
+<!--            <a href="#contact">Contact</a>-->
+<!--        </nav>-->
+
+        <div id=info th:if="${username != null}" class="box2">
+            <p th:text="'Ingelogd als: ' + ${username}" />
+            <p th:text="'Created: ' + ${created} + ' + 1'" />
+            <p th:text="'Expires: ' + ${expires} + ' + 1'" />
+            <form action="#" th:action="@{/logout}" method="post">
+                <input type="submit" value="Uitloggen" />
+            </form>
+        </div>
+    </header>
+
+    <div class="split-screen">
+        <br/>
+        <form action="#" th:action="@{/}" th:object="${input}" method="post" style="margin-right: 20px">
+            <p>Locatie: <input type="text" th:field="*{content}" /></p>
+            <input type="submit" value="Zoeken" />
         </form>
-    </div>
-
-    <br/>
-    <form action="#" th:action="@{/}" th:object="${input}" method="post">
-        <p>Locatie: <input type="text" th:field="*{content}" /></p>
-        <input type="submit" value="Zoeken" />
-    </form>
-
-    <br/>
-    <div th:if="${input.content != null}">
-        <h2>Score</h2>
-        <div class="container">
-            <p th:text="'Stad: ' + ${input.content}" />
-        </div>
-
-        <div class="container" th:if="${score != null}">
-            <p th:text="'Temperatuur: ' + ${score.getTemperatuur()}" />
-            <p th:text="'Wind: ' + ${score.getWind()}" />
-            <br/>
-            <p th:text="'Advies: ' + ${score.getAdvies()}" />
-            <p th:text="'Beschrijving: ' + ${score.getBeschrijving()}" />
-            <p th:text="'Gevoelstemperatuur: ' + ${score.getGevoelstemperatuur()}" />
-        </div>
 
         <br/>
 
-        <div id="map" style="height: 450px; width: 900px"></div>
+        <div th:if="${input.content != null}" id="score">
+            <h2>Score</h2>
+            <div class="container">
+                <p th:text="'Stad: ' + ${input.content}" />
+            </div>
+
+            <div class="container" th:if="${score != null}">
+                <p th:text="'Temperatuur: ' + ${score.getTemperatuur()}" />
+                <p th:text="'Wind: ' + ${score.getWind()}" />
+                <br/>
+                <p th:text="'Advies: ' + ${score.getAdvies()}" />
+                <p th:text="'Beschrijving: ' + ${score.getBeschrijving()}" />
+                <p th:text="'Gevoelstemperatuur: ' + ${score.getGevoelstemperatuur()}" />
+            </div>
+            <br/>
+        </div>
+
+        <div id="map" style="height: 600px; width: 965px; margin: 10px; right: -20px;"></div>
         <script th:inline="javascript">
-            /*<![CDATA[*/
-            var value = [(${location})];
-            var map = L.map('map').setView([value.lat, value.lon], 10);
+                /*<![CDATA[*/
+                var value = [(${location})];
+                var map = L.map('map').setView([value.lat, value.lon], 10);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                }).addTo(map);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-            }).addTo(map);
-
-            L.marker([value.lat, value.lon]).addTo(map)
-                .bindPopup(value.display_name)
-                .openPopup();
-            /*]]>*/
+                L.marker([value.lat, value.lon]).addTo(map)
+                    .bindPopup(value.display_name)
+                    .openPopup();
+                /*]]>*/
         </script>
     </div>
     <br/>
+
+
+        <style>
+            .split-screen {
+                display: flex;
+                height: 100vh; /* Volledige hoogte van het scherm */
+                margin-right: 20px;
+            }
+
+            .left, .right {
+                flex: 1; /* Beide zijden nemen 50% van de ruimte */
+                padding: 20px;
+            }
+
+            .left {
+                background-color: #f0f0f0; /* Grijze achtergrond */
+            }
+
+            .right {
+                background-color: #ffffff; /* Witte achtergrond */
+            }
+
+            .containerHeader {
+                display: flex;
+                justify-content: space-between; /* Verdeel elementen gelijkmatig */
+            }
+            .box1 {
+                flex: 1; /* Elke box neemt evenveel ruimte in */
+                margin: 0 10px; /* Optioneel: ruimte tussen de divs */
+                height: 100px;
+                background-color: lightblue;
+                text-align: center;
+                line-height: 100px;
+            }
+
+            .box2 {
+                flex: 1; /* Elke box neemt evenveel ruimte in */
+                margin: 0 10px; /* Optioneel: ruimte tussen de divs */
+                height: 100px;
+                background-color: lightblue;
+                text-align: center;
+                line-height: 95%;
+            }
+        </style>
 
 </body>
 </html>

@@ -1,10 +1,12 @@
 /Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/dom/Weer.java
 /Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/dom/Locatie.java
+/Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/controller/OAuthController.java
+/Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/KortKortApplication.java
 /Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/config/SecurityConfig.java
 /Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/controller/WeatherController.java
 /Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/controller/TestEndpoint.java
 /Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/controller/GuiController.java
 /Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/dom/Input.java
+/Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/service/StravaService.java
 /Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/service/GeoService.java
 /Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/handler/KeycloakLogoutHandler.java
-/Users/koosdrost/Documents/Coding/GIT/kortkort/src/main/java/com/example/demo/DemoApplication.java
