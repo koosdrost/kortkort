@@ -1,6 +1,8 @@
 package com.example.demo.config;
 
-import com.example.demo.handler.KeycloakLogoutHandler;
+import com.example.demo.keycloak.KeycloakLogoutHandler;
+import com.example.demo.keycloak.KeycloakTokenFilter;
+import com.example.demo.keycloak.KeycloakTokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -14,8 +16,9 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtDecoders;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -42,6 +45,11 @@ class SecurityConfig {
     }
 
     @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    @Bean
     protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
         return new RegisterSessionAuthenticationStrategy(sessionRegistry());
     }
@@ -51,19 +59,24 @@ class SecurityConfig {
         return new HttpSessionEventPublisher();
     }
 
-    //    @Bean
+    @Bean
+    public KeycloakTokenService keycloakTokenService() {
+        return new KeycloakTokenService();
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withJwkSetUri("http://localhost:8080/realms/Drife/protocol/openid-connect/certs")
+                .build();
+    }
+
+//    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-////        http.authorizeRequests(authorize -> authorize.anyRequest().authenticated())
-////                .oauth2Login(oauth2 -> oauth2
-////                        .defaultSuccessUrl("/callback", true) // Waar de gebruiker heen gaat na succesvolle login
-////                        .failureUrl("/login?error=true") // Foutpagina bij mislukte login
-////                );
+//        http
+//                .addFilterBefore(new KeycloakTokenFilter(keycloakTokenService()), UsernamePasswordAuthenticationFilter.class)
+//                .authorizeHttpRequests(authz -> authz.anyRequest().authenticated());
 //        return http.build();
 //    }
-    @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
-    }
 
     /**
      * Grant access exclusively to individuals with the role USER for URLs commencing with customers/*.
@@ -84,7 +97,7 @@ class SecurityConfig {
     }
 
     @Bean
-    public GrantedAuthoritiesMapper userAuthoritiesMapperForKeycloak() {
+    public GrantedAuthoritiesMapper mapperForKeycloak() {
         return authorities -> {
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
             var authority = authorities.iterator().next();
@@ -123,4 +136,16 @@ class SecurityConfig {
         return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role)).collect(
                 Collectors.toList());
     }
+
+
+    //    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+////        http.authorizeRequests(authorize -> authorize.anyRequest().authenticated())
+////                .oauth2Login(oauth2 -> oauth2
+////                        .defaultSuccessUrl("/callback", true) // Waar de gebruiker heen gaat na succesvolle login
+////                        .failureUrl("/login?error=true") // Foutpagina bij mislukte login
+////                );
+//        return http.build();
+//
+
 }

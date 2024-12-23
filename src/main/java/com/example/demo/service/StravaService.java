@@ -3,15 +3,10 @@ package com.example.demo.service;
 import javastrava.auth.AuthorisationService;
 import javastrava.auth.impl.AuthorisationServiceImpl;
 import javastrava.auth.model.Token;
-import javastrava.model.StravaAthlete;
-import javastrava.service.Strava;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
 
 //@Service

@@ -8,16 +8,10 @@
 </head>
 
 <body>
-<header class="containerHeader">
-    <h1 class="box1">Appearel choice</h1>
+<header class="spacer">
+    <h1 class="boxBlue" style="line-height: 100px;">Appearel choice</h1>
 
-    <!--        <nav class="box">-->
-    <!--            <a href="#home">Home</a>-->
-    <!--            <a href="#about">Over</a>-->
-    <!--            <a href="#contact">Contact</a>-->
-    <!--        </nav>-->
-
-    <div class="box2" id=info th:if="${username != null}">
+    <div class="boxBlue" id=info style="line-height: 4px;" th:if="${username != null}">
         <p th:text="'Ingelogd als: ' + ${username}"/>
         <p th:text="'Created: ' + ${created} + ' + 1'"/>
         <p th:text="'Expires: ' + ${expires} + ' + 1'"/>
@@ -27,14 +21,14 @@
     </div>
 </header>
 
-<div class="split-screen">
+<div class="spacer">
     <br/>
-    <form action="#" method="post" style="margin-right: 20px" th:action="@{/}" th:object="${input}">
-        <p>Locatie: <input th:field="*{content}" type="text"/></p>
-        <input type="submit" value="Zoeken"/>
-    </form>
-
-    <br/>
+    <div id="zoek">
+        <form action="#" method="post" style="margin-right: 20px" th:action="@{/}" th:object="${input}">
+            <p>Locatie: <input th:field="*{content}" type="text"/></p>
+            <input type="submit" value="Zoeken"/>
+        </form>
+    </div>
 
     <div id="score" th:if="${input.content != null}">
         <h2>Score</h2>
@@ -53,7 +47,7 @@
         <br/>
     </div>
 
-    <div id="map" style="height: 600px; width: 965px; margin: 10px; right: -20px;"></div>
+    <div id="map" style="height: 600px; width: 965px"></div>
         <script th:inline="javascript">
             /*<![CDATA[*/
             var value = [(${location})];
@@ -72,31 +66,13 @@
 
 
 <style>
-    .split-screen {
-        display: flex;
-        height: 100vh; /* Volledige hoogte van het scherm */
-        margin-right: 20px;
-    }
-
-    .left, .right {
-        flex: 1; /* Beide zijden nemen 50% van de ruimte */
-        padding: 20px;
-    }
-
-    .left {
-        background-color: #f0f0f0; /* Grijze achtergrond */
-    }
-
-    .right {
-        background-color: #ffffff; /* Witte achtergrond */
-    }
-
-    .containerHeader {
+    .spacer {
         display: flex;
         justify-content: space-between; /* Verdeel elementen gelijkmatig */
+        margin-bottom: 20px;
     }
 
-    .box1 {
+    .boxBlue {
         flex: 1; /* Elke box neemt evenveel ruimte in */
         margin: 0 10px; /* Optioneel: ruimte tussen de divs */
         height: 100px;
@@ -105,11 +81,10 @@
         line-height: 100px;
     }
 
-    .box2 {
+    .box {
         flex: 1; /* Elke box neemt evenveel ruimte in */
         margin: 0 10px; /* Optioneel: ruimte tussen de divs */
         height: 100px;
-        background-color: lightblue;
         text-align: center;
         line-height: 95%;
     }
