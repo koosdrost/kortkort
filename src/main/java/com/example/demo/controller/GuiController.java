@@ -4,6 +4,8 @@ import com.example.demo.dom.Input;
 import com.example.demo.service.GeoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,11 @@ public class GuiController {
 
     private static void setTokenInfo(Model model, Principal principal) {
         if (principal != null) {
+            OAuth2AuthenticationToken p = ((OAuth2AuthenticationToken) principal);
+            DefaultOidcUser user = (DefaultOidcUser) p.getPrincipal();
+            String token = user.getIdToken().getTokenValue();
+            model.addAttribute("token", token);
+
             model.addAttribute("username", principal.getName());
             // Regex to find the value of "iat"
             Pattern patternIat = Pattern.compile("iat=([^, }]+)");

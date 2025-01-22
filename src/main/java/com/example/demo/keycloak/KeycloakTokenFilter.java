@@ -6,17 +6,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.representations.AccessToken;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.time.Instant;
 
 @Component
 public class KeycloakTokenFilter implements Filter {
@@ -34,7 +30,7 @@ public class KeycloakTokenFilter implements Filter {
         // Haal het huidige access token uit de request (bijv. uit headers of sessie)
         String accessToken = getAccessTokenFromRequest(httpRequest);
 
-        if (accessToken != null && isTokenExpired(accessToken)) {
+        if (accessToken != null && isTokenExpired(httpRequest)) {
             String refreshToken = getRefreshTokenFromSession(httpRequest);
 
             // Vernieuw het access token met de KeycloakTokenService
@@ -46,18 +42,23 @@ public class KeycloakTokenFilter implements Filter {
         chain.doFilter(request, response); // Ga door met de request
     }
 
-    private boolean isTokenExpired(String token) {
-        // Controleer of het token verlopen is
-        // Gebruik bijv. de 'exp'-claim van de JWT
-        return true;
+    private boolean isTokenExpired(HttpServletRequest request) {
+        // Controleer of het token verlopen is, gebruik bijv. de 'exp'-claim van de JWT
+        boolean expired = false;
+        if (request.getUserPrincipal() != null) {
+            OAuth2AuthenticationToken p = ((OAuth2AuthenticationToken) request.getUserPrincipal());
+            DefaultOidcUser user = (DefaultOidcUser) p.getPrincipal();
+            if (user.getExpiresAt().isBefore(Instant.now())) {
+                expired = true;
+            }
+        }
+        return expired;
     }
 
     private String getAccessTokenFromRequest(HttpServletRequest request) {
         String token = null;
         if (request.getUserPrincipal() != null) {
-            Principal principal = request.getUserPrincipal();
-
-            OAuth2AuthenticationToken p = ((OAuth2AuthenticationToken) principal);
+            OAuth2AuthenticationToken p = ((OAuth2AuthenticationToken) request.getUserPrincipal());
             DefaultOidcUser user = (DefaultOidcUser) p.getPrincipal();
             token = user.getIdToken().getTokenValue();
         }
@@ -66,7 +67,14 @@ public class KeycloakTokenFilter implements Filter {
 
     private String getRefreshTokenFromSession(HttpServletRequest request) {
         // Haal het refresh token uit de sessie of andere opslag
-        return null;
+        String token = null;
+        if (request.getUserPrincipal() != null) {
+            Principal principal = request.getUserPrincipal();
+            OAuth2AuthenticationToken p = ((OAuth2AuthenticationToken) principal);
+            DefaultOidcUser user = (DefaultOidcUser) p.getPrincipal();
+            token = user.getIdToken().getTokenValue();
+        }
+        return token;
     }
 
     private void saveNewAccessTokenToSession(HttpServletRequest request, String newAccessToken) {

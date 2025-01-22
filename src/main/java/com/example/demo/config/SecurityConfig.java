@@ -70,14 +70,6 @@ class SecurityConfig {
                 .build();
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .addFilterBefore(new KeycloakTokenFilter(keycloakTokenService()), UsernamePasswordAuthenticationFilter.class)
-//                .authorizeHttpRequests(authz -> authz.anyRequest().authenticated());
-//        return http.build();
-//    }
-
     /**
      * Grant access exclusively to individuals with the role USER for URLs commencing with customers/*.
      * Allow authenticated users unrestricted access to all other URLs, excluding those under customers/* if they lack the USER role.
@@ -114,8 +106,7 @@ class SecurityConfig {
                     var roles = (Collection<String>) realmAccess.get(ROLES_CLAIM);
                     mappedAuthorities.addAll(generateAuthoritiesFromClaim(roles));
                 } else if (userInfo.hasClaim(GROUPS)) {
-                    Collection<String> roles = userInfo.getClaim(
-                            GROUPS);
+                    Collection<String> roles = userInfo.getClaim(GROUPS);
                     mappedAuthorities.addAll(generateAuthoritiesFromClaim(roles));
                 }
             } else {

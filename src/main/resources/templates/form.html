@@ -13,8 +13,8 @@
 
     <div class="boxBlue" id=info style="line-height: 4px;" th:if="${username != null}">
         <p th:text="'Ingelogd als: ' + ${username}"/>
-        <p th:text="'Created: ' + ${created} + ' + 1'"/>
         <p th:text="'Expires: ' + ${expires} + ' + 1'"/>
+        <p th:text="'Token: ' + ${token.subSequence(0, 75)}"/>
         <form action="#" th:action="@{/logout}" method="post">
             <input type="submit" value="Uitloggen"/>
         </form>

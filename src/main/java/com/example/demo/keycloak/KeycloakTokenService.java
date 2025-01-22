@@ -1,34 +1,40 @@
 package com.example.demo.keycloak;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Map;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 
 @Component
 public class KeycloakTokenService {
 
-    private final String keycloakUrl = "http://localhost:8080/realms/Drife/protocol/openid-connect/token";
-    private final String clientId = "kortkort";
-    private final String clientSecret = "geheim";
+    private final String TOKEN_URL = "http://localhost:8080/realms/Drife/protocol/openid-connect/token";
+    private final String CLIENT_ID = "kortkort";
+    private final String CLIENT_SECRET = "geheim";
 
-    public String refreshToken(String refreshToken) {
-        RestTemplate restTemplate = new RestTemplate();
+    public String refreshToken(String REFRESH_TOKEN) {
+        HttpClient client = HttpClient.newHttpClient();
 
-        // Stel de POST-request samen
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(keycloakUrl)
-                .queryParam("grant_type", "refresh_token")
-                .queryParam("client_id", clientId)
-                .queryParam("client_secret", clientSecret)
-                .queryParam("refresh_token", refreshToken);
+        String requestBody = "grant_type=refresh_token" +
+                "&client_id=" + URLEncoder.encode(CLIENT_ID, StandardCharsets.UTF_8) +
+                "&client_secret=" + URLEncoder.encode(CLIENT_SECRET, StandardCharsets.UTF_8) +
+                "&refresh_token=" + URLEncoder.encode(REFRESH_TOKEN, StandardCharsets.UTF_8);
 
-        // Verzend de request en ontvang het antwoord
-        var response = restTemplate.postForObject(uriBuilder.toUriString(), null, Map.class);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(TOKEN_URL))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
 
-        if (response != null && response.containsKey("access_token")) {
-            return (String) response.get("access_token");
-        } else {
+        try {
+            // Verzend de request en ontvang het antwoord
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.body();
+        } catch (Exception e) {
             throw new RuntimeException("Unable to refresh token");
         }
     }
